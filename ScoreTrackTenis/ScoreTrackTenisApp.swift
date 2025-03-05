@@ -10,23 +10,11 @@ import SwiftData
 
 @main
 struct ScoreTrackTenisApp: App {
-    var sharedModelContainer: ModelContainer = {
-        let schema = Schema([
-            Item.self,
-        ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-
-        do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
-        } catch {
-            fatalError("Could not create ModelContainer: \(error)")
-        }
-    }()
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MatchListView()
         }
-        .modelContainer(sharedModelContainer)
+        .modelContainer(for: [TennisMatch.self, TennisSet.self, TennisGame.self])
     }
 }
