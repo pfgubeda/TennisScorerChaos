@@ -129,7 +129,6 @@ struct MatchDetailView: View {
                 
                 // Set scores grid
                 LazyVGrid(columns: [
-                    GridItem(.flexible(), spacing: 12),
                     GridItem(.flexible(), spacing: 12)
                 ], spacing: 12) {
                     ForEach(match.sets.indices, id: \.self) { index in
@@ -145,23 +144,23 @@ struct MatchDetailView: View {
     
     // Set score card for vertical layout
     private func setScoreCard(set: TennisSet, index: Int) -> some View {
-        VStack(spacing: 8) {
+        VStack() {
             Text("Set \(index + 1)")
                 .font(.headline)
                 .foregroundColor(.secondary)
             
             HStack(spacing: 16) {
+                Spacer()
                 Text("\(set.playerOneGames)")
                     .font(.system(size: 32, weight: .bold))
                     .foregroundColor(set.isCompleted && set.playerOneWon ? .blue : .primary)
                 
-                Text("-")
-                    .font(.title2)
-                    .foregroundColor(.secondary)
+                Spacer()
                 
                 Text("\(set.playerTwoGames)")
                     .font(.system(size: 32, weight: .bold))
                     .foregroundColor(set.isCompleted && !set.playerOneWon ? .red : .primary)
+                Spacer()
             }
         }
         .padding()
@@ -183,11 +182,6 @@ struct MatchDetailView: View {
         return HStack(alignment: .center, spacing: 0) {
             // Player names column
             VStack(alignment: .leading, spacing: 0) {
-                // Empty header cell
-                Rectangle()
-                    .fill(Color.clear)
-                    .frame(height: 50)
-                
                 // Player one name
                 HStack {
                     if playerOneServing {
@@ -236,12 +230,6 @@ struct MatchDetailView: View {
             ForEach(match.sets.indices, id: \.self) { index in
                 let set = match.sets[index]
                 VStack(alignment: .center, spacing: 0) {
-                    // Set number
-                    Text("\(index + 1)")
-                        .font(.headline)
-                        .foregroundColor(.secondary)
-                        .frame(width: setColumnWidth, height: 50)
-                    
                     // Player one score
                     Text("\(set.playerOneGames)")
                         .font(.title2)
@@ -278,12 +266,6 @@ struct MatchDetailView: View {
             if let currentSet = match.sets.last, !currentSet.isCompleted,
                let currentGame = currentSet.games.last, !currentGame.isCompleted {
                 VStack(alignment: .center, spacing: 0) {
-                    // Game header
-                    Text("GAME")
-                        .font(.headline)
-                        .foregroundColor(.secondary)
-                        .frame(width: gameColumnWidth, height: 50)
-                    
                     // Player one score
                     Text(pointString(currentGame.playerOnePoints, isTiebreak: currentGame.isTiebreak))
                         .font(.system(size: 36, weight: .bold))
@@ -333,10 +315,6 @@ struct MatchDetailView: View {
     // Scoring buttons view
     private func scoringButtonsView(currentSet: TennisSet, currentGame: TennisGame) -> some View {
         VStack(spacing: 20) {
-            Text("SCORE POINT")
-                .font(.headline)
-                .foregroundColor(.secondary)
-            
             HStack(spacing: 20) {
                 // Player One Button
                 Button {
@@ -439,7 +417,7 @@ struct MatchDetailView: View {
             case 2: return "30"
             case 3: return "40"
             case 4: return "AD"
-            default: return "-"
+            default: return "40" // This should never happen with the fixed logic
             }
         }
     }
@@ -519,3 +497,31 @@ struct EdgeBorder: Shape {
         return path
     }
 } 
+
+#Preview {
+    NavigationStack {
+        MatchDetailView(match: TennisMatch.sampleMatch)
+            .modelContainer(for: TennisMatch.self, inMemory: true)
+    }
+}
+
+// Helper extension to create a sample match for previews
+extension TennisMatch {
+    static var sampleMatch: TennisMatch {
+        let match = TennisMatch(
+            playerOneName: "Roger Federer",
+            playerTwoName: "Rafael Nadal",
+            bestOfSets: 3,
+            advantageSet: true,
+            tiebreakInFinalSet: true
+        )
+        
+        // Add a set with some games
+        let firstSet = match.addNewSet()
+        let game = firstSet.addNewGame()
+        game.playerOnePoints = 2
+        game.playerTwoPoints = 1
+        
+        return match
+    }
+}

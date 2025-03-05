@@ -141,14 +141,26 @@ class TennisGame {
     
     func addPointToPlayerOne() {
         if !isCompleted {
-            playerOnePoints += 1
+            // If player two has advantage (4 points) and player one scores, go back to deuce
+            if !isTiebreak && playerTwoPoints == 4 && playerOnePoints == 3 {
+                playerOnePoints = 3
+                playerTwoPoints = 3
+            } else {
+                playerOnePoints += 1
+            }
             checkGameCompletion()
         }
     }
     
     func addPointToPlayerTwo() {
         if !isCompleted {
-            playerTwoPoints += 1
+            // If player one has advantage (4 points) and player two scores, go back to deuce
+            if !isTiebreak && playerOnePoints == 4 && playerTwoPoints == 3 {
+                playerOnePoints = 3
+                playerTwoPoints = 3
+            } else {
+                playerTwoPoints += 1
+            }
             checkGameCompletion()
         }
     }

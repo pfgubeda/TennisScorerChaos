@@ -66,3 +66,8 @@ struct MatchConfigurationView: View {
         dismiss()
     }
 } 
+
+#Preview {
+    MatchConfigurationView()
+        .modelContainer(for: TennisMatch.self, inMemory: true)
+}

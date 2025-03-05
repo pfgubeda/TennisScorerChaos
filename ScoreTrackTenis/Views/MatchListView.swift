@@ -82,3 +82,8 @@ struct MatchListView: View {
         }
     }
 }
+
+#Preview {
+    MatchListView()
+        .modelContainer(for: TennisMatch.self, inMemory: true)
+}
