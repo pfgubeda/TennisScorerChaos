@@ -9,36 +9,56 @@ struct MatchListView: View {
     
     var body: some View {
         NavigationStack {
-            List {
-                ForEach(matches) { match in
-                    NavigationLink {
-                        MatchDetailView(match: match)
-                    } label: {
-                        VStack(alignment: .leading) {
-                            Text("\(match.playerOneName) vs \(match.playerTwoName)")
-                                .font(.headline)
-                            
-                            HStack {
-                                Text(match.date, style: .date)
-                                    .font(.subheadline)
-                                    .foregroundStyle(.secondary)
+            VStack {
+                List {
+                    ForEach(matches) { match in
+                        NavigationLink {
+                            MatchDetailView(match: match)
+                        } label: {
+                            VStack(alignment: .leading) {
+                                Text("\(match.playerOneName) vs \(match.playerTwoName)")
+                                    .font(.headline)
                                 
-                                Spacer()
-                                
-                                if match.isCompleted {
-                                    Text("Winner: \(match.winner ?? "Unknown")")
+                                HStack {
+                                    Text(match.date, style: .date)
                                         .font(.subheadline)
-                                        .foregroundStyle(.green)
-                                } else {
-                                    Text("In Progress")
-                                        .font(.subheadline)
-                                        .foregroundStyle(.blue)
+                                        .foregroundStyle(.secondary)
+                                    
+                                    Spacer()
+                                    
+                                    if match.isCompleted {
+                                        Text("Winner: \(match.winner ?? "Unknown")")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.green)
+                                    } else {
+                                        Text("In Progress")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.blue)
+                                    }
                                 }
                             }
                         }
                     }
+                    .onDelete(perform: deleteMatches)
                 }
-                .onDelete(perform: deleteMatches)
+                
+                Button {
+                    showingNewMatchSheet = true
+                } label: {
+                    HStack {
+                        Image(systemName: "plus.circle.fill")
+                            .font(.title2)
+                        Text("Start New Match")
+                            .fontWeight(.semibold)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
+                }
+                .padding(.horizontal)
+                .padding(.bottom)
             }
             .navigationTitle("Tennis Matches")
             .toolbar {
@@ -61,4 +81,4 @@ struct MatchListView: View {
             modelContext.delete(matches[index])
         }
     }
-} 
+}
